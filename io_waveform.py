@@ -103,7 +103,7 @@ def resample_waveform_equi(vector, t, minN):
 	return newVector, tnew, dtnew
 
 
-def read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIGHT, GMAX):
+def read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIGHT, GMAX, flipB=False):
 	# load gradient waveform from :filename: generated with
 	# https://github.com/jsjol/NOW
 	# :GMAX: is the maximum gradient strength in T/m
@@ -117,13 +117,15 @@ def read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIG
 	NPOINTSA = vectorA.shape[0]
 	vectorB = np.genfromtxt(filenameB, skip_header=1)
 	NPOINTSB = vectorB.shape[0]
-    
+    if flipB:
+    	vectorB *= -1
+
     # compute time duration of 1 interval between 2 points (constant)
 	dtA = DURATION_LEFT / float(NPOINTSA-1) # s 
 	dtB = DURATION_RIGHT / float(NPOINTSB-1) # s 
 	dt = (dtA + dtB) / 2
     
-	NPOINTS0 = round(DURATION_PAUSE / dt - 1)
+	NPOINTS0 = int(round(DURATION_PAUSE / float(dt))) - 1
 	vector0 = np.zeros((NPOINTS0, 3))
     
 	vector = np.concatenate((vectorA,vector0,vectorB), axis=0)

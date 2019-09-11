@@ -17,7 +17,7 @@ DURATION_PAUSE = 8.42e-3 # s
 DURATION_RIGHT = 16.51e-3 # s
 
 # read waveform file
-gradient_low, t_low, dt_low = read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIGHT, GMAX)
+gradient_low, t_low, dt_low = read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIGHT, GMAX, flipB=False)
 gradient_low_norm = np.linalg.norm(gradient_low, axis=1)
 
 # plot gradient per axis and norm
