@@ -103,7 +103,45 @@ def resample_waveform_equi(vector, t, minN):
 	return newVector, tnew, dtnew
 
 
+def read_NOWAB(filenameA, filenameB, DURATION_LEFT, DURATION_PAUSE, DURATION_RIGHT, GMAX):
+	# load gradient waveform from :filename: generated with
+	# https://github.com/jsjol/NOW
+	# :GMAX: is the maximum gradient strength in T/m
+	# :DURATION_LEFT: is the left waveform duration in s
+	# :DURATION_PAUSE: is the pause between waveform duration in s
+	# :DURATION_RIGHT: is the right waveform duration in s
 
+	# read normalized gradient waveform
+	# skip first line containing
+	vectorA = np.genfromtxt(filenameA, skip_header=1)
+	NPOINTSA = vectorA.shape[0]
+	vectorB = np.genfromtxt(filenameB, skip_header=1)
+	NPOINTSB = vectorB.shape[0]
+    
+    # compute time duration of 1 interval between 2 points (constant)
+	dtA = DURATION_LEFT / float(NPOINTSA-1) # s 
+	dtB = DURATION_RIGHT / float(NPOINTSB-1) # s 
+	dt = (dtA + dtB) / 2
+    
+	NPOINTS0 = round(DURATION_PAUSE / dt - 1)
+	vector0 = np.zeros((NPOINTS0, 3))
+    
+	vector = np.concatenate((vectorA,vector0,vectorB), axis=0)
+    
+	DURATION = DURATION_LEFT + DURATION_PAUSE + DURATION_RIGHT
+	NPOINTS = NPOINTSA + NPOINTS0 + NPOINTSB
+
+	# Rescale gradient to T/m
+	# can go up sqrt(3) ~ 1.73 if the waveform was made with MAXNORM
+	# should not go much much higher than 1 if the waveform was made with euclidean nrom
+	vector *= GMAX
+	print('axis Gmax is {} T/m'.format(np.abs(vector).max()))
+	print('norm Gmax is {} T/m'.format(np.linalg.norm(vector, axis=1).max()))
+
+	# time discretization
+	t = np.linspace(0, DURATION, NPOINTS)
+
+	return vector, t, dt
 
 
 
