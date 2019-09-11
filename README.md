@@ -1,6 +1,6 @@
 # Gradient Non-Linearity Correction for Arbitrary Gradient Waveform
 
-This repository is in collaboration with [Chantal M.W. Tax](https://www.cardiff.ac.uk/people/view/1156550-tax-chantal) and [Cornelius Eichner](https://github.com/cornelius-eichner)
+This repository is in collaboration with [Chantal M.W. Tax](https://github.com/ChantalTax) and [Cornelius Eichner](https://github.com/cornelius-eichner)
 
 
 
