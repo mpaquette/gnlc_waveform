@@ -20,12 +20,12 @@ gradient_low, t_low, dt_low = read_NOW(filename, DURATION_LEFT, DURATION_PAUSE, 
 gradient_low_norm = np.linalg.norm(gradient_low, axis=1)
 
 # plot gradient per axis and norm
-pl.figure()
-pl.subplot(2,1,1)
-peraxisplot(t_low, gradient_low, title='Gradient', xlabel='time (s)', ylabel='gradient (T/m)', axhline=[0], axvline=[0, DURATION_LEFT, DURATION_LEFT+DURATION_PAUSE, DURATION_LEFT+DURATION_PAUSE+DURATION_RIGHT])
-pl.subplot(2,1,2)
-plot(t_low, gradient_low_norm, label='', title='Gradient Norm', xlabel='time (s)', ylabel='gradient (T/m)', axhline=[0], axvline=[])
-pl.show()
+# pl.figure()
+# pl.subplot(2,1,1)
+# peraxisplot(t_low, gradient_low, title='Gradient', xlabel='time (s)', ylabel='gradient (T/m)', axhline=[0], axvline=[0, DURATION_LEFT, DURATION_LEFT+DURATION_PAUSE, DURATION_LEFT+DURATION_PAUSE+DURATION_RIGHT])
+# pl.subplot(2,1,2)
+# plot(t_low, gradient_low_norm, label='', title='Gradient Norm', xlabel='time (s)', ylabel='gradient (T/m)', axhline=[0], axvline=[])
+# pl.show()
 
 # resampling low time-resolution gradient to >=1000 points for proper numerical sumation
 gradient, t, dt = resample_waveform_equi(gradient_low, t_low, minN=1000)
@@ -136,7 +136,7 @@ print('planar = {:.2f}'.format(dist_bp_p))
 print('linear = {:.2f}'.format(dist_bl_p))
 
 
-
+print('\nCOMPUTED minus PREDICTED')
 print(dist_btensor - dist_btensor_p)
 
 
