@@ -10,6 +10,28 @@ def distort_G(gradient, gnl_tensor):
 	# :gnl_tensor: is the gradient non-linearity tensor
 	return gnl_tensor.dot(gradient.T).T
 
+def predict_B_from_L(B, L):
+	# predict the distorted B-tensor from the undistorted one and the GNL tensor
+	dist_B = np.zeros((3,3))
+	# Bxx
+	dist_B[0,0] = L[0,0]**2*B[0,0] + 2*L[0,0]*L[0,1]*B[0,1] + 2*L[0,0]*L[0,2]*B[0,2] + L[0,1]**2*B[1,1] + 2*L[0,1]*L[0,2]*B[1,2] + L[0,2]**2*B[2,2]
+	# Bxy
+	dist_B[0,1] = L[0,0]*L[1,0]*B[0,0] + (L[0,0]*L[1,1] + L[0,1]*L[1,0])*B[0,1] + (L[0,0]*L[1,2] + L[0,2]*L[1,0])*B[0,2] + L[0,1]*L[1,1]*B[1,1] + (L[0,1]*L[1,2] + L[0,2]*L[1,1])*B[1,2] + L[0,2]*L[1,2]*B[2,2]
+	dist_B[1,0] = dist_B[0,1]
+	# Bxz
+	dist_B[0,2] = L[0,0]*L[2,0]*B[0,0] + (L[0,0]*L[2,1] + L[0,1]*L[2,0])*B[0,1] + (L[0,0]*L[2,2] + L[0,2]*L[2,0])*B[0,2] + L[0,1]*L[2,1]*B[1,1] + (L[0,1]*L[2,2] + L[0,2]*L[2,1])*B[1,2] + L[0,2]*L[2,2]*B[2,2]
+	dist_B[2,0]
+	# Byy
+	dist_B[1,1] = L[1,0]**2*B[0,0] + 2*L[1,0]*L[1,1]*B[0,1] + 2*L[1,0]*L[1,2]*B[0,2] + L[1,1]**2*B[1,1] + 2*L[1,1]*L[1,2]*B[1,2] + L[1,2]**2*B[2,2]
+	# Byz
+	dist_B[1,2] = L[1,0]*L[2,0]*B[0,0] + (L[1,0]*L[2,1] + L[1,1]*L[2,0])*B[0,1] + (L[1,0]*L[2,2] + L[1,2]*L[2,0])*B[0,2] + L[1,1]*L[2,1]*B[1,1] + (L[1,1]*L[2,2] + L[1,2]*L[2,1])*B[1,2] + L[1,2]*L[2,2]*B[2,2]
+	dist_B[2,1] = dist_B[1,2]
+	# Bzz
+	dist_B[2,2] = L[2,0]**2*B[0,0] + 2*L[2,0]*L[2,1]*B[0,1] + 2*L[2,0]*L[0,2]*B[0,2] + L[2,1]**2*B[1,1] + 2*L[2,1]*L[2,2]*B[1,2] + L[2,2]**2*B[2,2]
+	return dist_B
+
+
+
 
 def compute_q_from_G(gradient, dt):
 	# compute the q-space vectors from the gradient vectors
