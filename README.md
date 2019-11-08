@@ -10,7 +10,7 @@ We currently support ["Topgaard style"](https://github.com/daniel-topgaard/md-dm
 **example3.py** loads a Topgaard waveform,  numerically computes q-vector and b-tensor then distort it with a GNL tensor and recompute numerically waveform, q-vector and B-tensor.  
 
 **example4.py** loads a NOW (2 files style) waveform, resample it, numerically computes q-vector and b-tensor then distort it with a GNL tensor and recompute numerically waveform, q-vector and B-tensor.  
-
+**example5.py** Comparaison of the close-form B-tensor distortion formula to the numerical approximation for random GNL tensor.  
 
 
 
