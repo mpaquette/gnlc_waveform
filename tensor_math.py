@@ -53,6 +53,25 @@ def voigt_tensor(D):
 	return d
 
 
+def d_to_D(d):
+	# assumes d is ordered:
+	# xx yy zz yz xz xy
+	# with "multiplier" 
+	# 1 1 1 sqrt(2) sqrt(2) sqrt(2)
+	D = np.zeros((3,3))
+	D[0,0] = d[0]
+	D[1,1] = d[1]
+	D[2,2] = d[2]
+	D[1,2] = d[3] / np.sqrt(2)
+	D[2,1] = D[1,2]
+	D[0,2] = d[4] / np.sqrt(2)
+	D[2,0] = D[0,2]
+	D[0,1] = d[5] / np.sqrt(2)
+	D[1,0] = D[0,1]
+
+	return D
+
+
 def ensD_2(d):
 	# <D> xo 2
 	# from Voigt notation
@@ -67,6 +86,26 @@ def w_ensD_2(d, P):
 	# eq. 9 in Westin et al 2016
 	tmp = (P[:, None, None]*d).sum(axis=0)
 	return np.outer(tmp, tmp)
+
+
+def ens_D2(d):
+	# <D xo 2>
+	# from Voigt notation
+	# eq. 8 in Westin et al 2016
+	tmp = np.zeros((d.shape[0], 6, 6))
+	for i in range(d.shape[0]):
+		tmp[i] = np.outer(d[i],d[i])
+	return tmp.mean(axis=0)
+
+
+def w_ens_D2(d, P):
+	# <D xo 2>
+	# from Voigt notation
+	# eq. 8 in Westin et al 2016
+	tmp = np.zeros((d.shape[0], 6, 6))
+	for i in range(d.shape[0]):
+		tmp[i] = np.outer(d[i],d[i])
+	return (P[:, None, None]*tmp).sum(axis=0)
 
 
 # TODO add weight
