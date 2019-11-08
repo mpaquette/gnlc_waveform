@@ -5,7 +5,9 @@ We currently support ["Topgaard style"](https://github.com/daniel-topgaard/md-dm
 
 **example1.py** loads a Topgaard waveform and numerically computes q-vector and B-tensor.
 
-**example2.py** loads a NOW waveform, resample it, numerically computes q-vector and b-tensor then distort it with a GNL tensor and recompute numerically waveform, q-vector and /B-tensor.  
+**example2.py** loads a NOW waveform, resample it, numerically computes q-vector and b-tensor then distort it with a GNL tensor and recompute numerically waveform, q-vector and B-tensor.  
+
+**example3.py** loads a Topgaard waveform, resample it, numerically computes q-vector and b-tensor then distort it with a GNL tensor and recompute numerically waveform, q-vector and B-tensor.  
 
 
 
