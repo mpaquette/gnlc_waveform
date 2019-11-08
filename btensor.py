@@ -4,11 +4,45 @@ import numpy as np
 GYRO = 42.57747892e6 * 2*np.pi # rad/s T
 
 
+def predict_B_list_from_L(B, L):
+	# predict the distorted B-tensor from the undistorted one and the GNL tensor
+	dist_B = np.zeros((B.shape[0],3,3))
+	# Bxx
+	dist_B[:,0,0] = L[0,0]**2*B[:,0,0] + 2*L[0,0]*L[0,1]*B[:,0,1] + 2*L[0,0]*L[0,2]*B[:,0,2] + L[0,1]**2*B[:,1,1] + 2*L[0,1]*L[0,2]*B[:,1,2] + L[0,2]**2*B[:,2,2]
+	# Bxy
+	dist_B[:,0,1] = L[0,0]*L[1,0]*B[:,0,0] + (L[0,0]*L[1,1] + L[0,1]*L[1,0])*B[:,0,1] + (L[0,0]*L[1,2] + L[0,2]*L[1,0])*B[:,0,2] + L[0,1]*L[1,1]*B[:,1,1] + (L[0,1]*L[1,2] + L[0,2]*L[1,1])*B[:,1,2] + L[0,2]*L[1,2]*B[:,2,2]
+	dist_B[:,1,0] = dist_B[:,0,1]
+	# Bxz
+	dist_B[:,0,2] = L[0,0]*L[2,0]*B[:,0,0] + (L[0,0]*L[2,1] + L[0,1]*L[2,0])*B[:,0,1] + (L[0,0]*L[2,2] + L[0,2]*L[2,0])*B[:,0,2] + L[0,1]*L[2,1]*B[:,1,1] + (L[0,1]*L[2,2] + L[0,2]*L[2,1])*B[:,1,2] + L[0,2]*L[2,2]*B[:,2,2]
+	dist_B[:,2,0] = dist_B[:,0,2]
+	# Byy
+	dist_B[:,1,1] = L[1,0]**2*B[:,0,0] + 2*L[1,0]*L[1,1]*B[:,0,1] + 2*L[1,0]*L[1,2]*B[:,0,2] + L[1,1]**2*B[:,1,1] + 2*L[1,1]*L[1,2]*B[:,1,2] + L[1,2]**2*B[:,2,2]
+	# Byz
+	dist_B[:,1,2] = L[1,0]*L[2,0]*B[:,0,0] + (L[1,0]*L[2,1] + L[1,1]*L[2,0])*B[:,0,1] + (L[1,0]*L[2,2] + L[1,2]*L[2,0])*B[:,0,2] + L[1,1]*L[2,1]*B[:,1,1] + (L[1,1]*L[2,2] + L[1,2]*L[2,1])*B[:,1,2] + L[1,2]*L[2,2]*B[:,2,2]
+	dist_B[:,2,1] = dist_B[:,1,2]
+	# Bzz
+	dist_B[:,2,2] = L[2,0]**2*B[:,0,0] + 2*L[2,0]*L[2,1]*B[:,0,1] + 2*L[2,0]*L[2,2]*B[:,0,2] + L[2,1]**2*B[:,1,1] + 2*L[2,1]*L[2,2]*B[:,1,2] + L[2,2]**2*B[:,2,2]
+	return dist_B
+
+
+def get_btensor_shape_topgaard_list(eigenval):
+	# compute the Topgaard btensor shape (spheric, planar, linear)
+	eig = np.sort(eigenval, axis=1) # small to big
+	bs = 3*eig[:,0] # spheric
+	bp = 2 * (eig[:,1] - (bs/3.)) # planar
+	bl = eig[:,2] - (bs/3.) - (bp/2.) # linear
+	bval = np.sum(eig, axis=1).astype(np.float)
+	# normalize shape
+	return bval, bs/bval, bp/bval, bl/bval
+
+
+# OLD 1D functions 
 def distort_G(gradient, gnl_tensor):
 	# Distort the gradient waveform with the gradient non-linearity
 	# :gradient: is the gradient waveform (T/m)
 	# :gnl_tensor: is the gradient non-linearity tensor
 	return gnl_tensor.dot(gradient.T).T
+
 
 def predict_B_from_L(B, L):
 	# predict the distorted B-tensor from the undistorted one and the GNL tensor
@@ -29,8 +63,6 @@ def predict_B_from_L(B, L):
 	# Bzz
 	dist_B[2,2] = L[2,0]**2*B[0,0] + 2*L[2,0]*L[2,1]*B[0,1] + 2*L[2,0]*L[2,2]*B[0,2] + L[2,1]**2*B[1,1] + 2*L[2,1]*L[2,2]*B[1,2] + L[2,2]**2*B[2,2]
 	return dist_B
-
-
 
 
 def compute_q_from_G(gradient, dt):
@@ -79,6 +111,4 @@ def get_btensor_shape_topgaard(eigenval):
 	bval = np.sum(eig)
 	# normalize shape
 	return bval, bs/float(bval), bp/float(bval), bl/float(bval)
-
-
 

@@ -1,6 +1,7 @@
 import numpy as np
 import nibabel as nib
 
+
 def fsl_2_tensor(dev_x_path, dev_y_path, dev_z_path):
 	# build voxelwise gradient non-linearity tensor from the output of FSL's calc_grad_perc_dev (applied to the ouput of grad_unwarp.py (https://github.com/mpaquette/gradunwarp))
 	dev_X = nib.load(dev_x_path).get_data()
@@ -15,7 +16,6 @@ def fsl_2_tensor(dev_x_path, dev_y_path, dev_z_path):
 	return tensors
 
 
-
 def compute_gnl_score(tensors):
 	# compute the Gradient Non-Linearity score of the gnl tensor
 	# The score is pseudo distance between GNL tensor and the identity matrix
@@ -24,12 +24,4 @@ def compute_gnl_score(tensors):
 	_,s,_ = np.linalg.svd(tensors)
 	dist_score = np.linalg.norm(s-np.ones(3), axis=-1)
 	return dist_score
-
-
-
-
-
-
-
-
 
